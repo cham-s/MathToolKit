@@ -5,6 +5,7 @@
 //  Created by chams on 05/11/2019.
 //
 
+import Foundation
 
 struct Tuple<T: Numeric>: MutableCollection {
     typealias Index = Array<T>.Index
@@ -221,7 +222,6 @@ extension Matrix {
     }
 }
 
-
 enum Quadrant {
     case first
     case second
@@ -273,4 +273,72 @@ struct Angle {
 
 extension Angle: CustomStringConvertible {
     var description: String { "\(degrees) degrees, \(radians) radians." }
+}
+
+struct Vector2D {
+    var x = 0.0, y = 0.0
+    var magnitude: Double { sqrt(pow(x, 2) + pow(y, 2)) }
+    var direction: Double? {
+        guard x != 0 else {
+            return nil
+        }
+        
+        let angle = Angle(radians: atan(y / x))
+        let quadrant = Quadrant(x: x, y: y)
+        
+        switch quadrant {
+        case .first:
+            return angle.degrees
+        case .second:
+            return angle.degrees + 180.0
+        case .third:
+            return angle.degrees + 180.0
+        default:
+            return angle.degrees + 360.0
+        }
+    }
+    var notation: VectorNotation
+    
+    init(x: Double, y: Double, notation: VectorNotation = .component) {
+        self.x = x
+        self.y = y
+        self.notation = notation
+    }
+    
+    enum VectorNotation {
+        case column, component, unit
+    }
+}
+
+extension Vector2D {
+
+    static func *(left: Double, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left * right.x, y: left * right.y)
+    }
+    
+    static func -(left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x - right.x, y: left.y - right.y)
+    }
+    
+    static func +(left: Vector2D, right: Vector2D) -> Vector2D {
+        return Vector2D(x: left.x + right.x, y: left.y + right.y)
+    }
+}
+
+extension Vector2D: CustomStringConvertible {
+    
+    var description: String {
+        var output = ""
+        switch notation {
+        case .column:
+            output += "[ \(x) ]\n[ \(y) ]\n"
+        case .unit:
+            output += "\(x)i + \(y)j\n"
+        case.component:
+            output += "(x: \(self.x), y: \(self.y))\n"
+        }
+        
+        output += "magnitude: \(magnitude)"
+        return output
+    }
 }
