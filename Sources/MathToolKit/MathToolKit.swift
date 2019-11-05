@@ -245,3 +245,32 @@ enum Quadrant {
     }
 }
 
+extension Quadrant: CustomStringConvertible {
+    var description: String {
+        let quadrant = self == .origin ? "\(self)" : "\(self) quadrant"
+        return "The point is located at the \(quadrant)."
+    }
+}
+
+
+/*
+ Mark: Angle
+ */
+struct Angle {
+    var degrees: Double
+    var radians: Double
+    
+    init(radians: Double) {
+        self.radians = radians
+        self.degrees = (radians * 180.0) / Double.pi
+    }
+    
+    init(degrees: Double) {
+        self.degrees = degrees
+        self.radians = (degrees * Double.pi) / 180.0
+    }
+}
+
+extension Angle: CustomStringConvertible {
+    var description: String { "\(degrees) degrees, \(radians) radians." }
+}
