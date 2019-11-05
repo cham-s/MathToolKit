@@ -221,3 +221,27 @@ extension Matrix {
     }
 }
 
+
+enum Quadrant {
+    case first
+    case second
+    case third
+    case fourth
+    case origin
+
+    init(x: Double, y: Double) {
+        switch (x, y) {
+        case (0.0, 0.0):
+            self = .origin
+        case (1.0..., 1.0...):
+            self = .first
+        case (...1.0, 1.0...):
+            self = .second
+        case (...1.0, ...1.0):
+            self = .third
+        default:
+            self = .fourth
+        }
+    }
+}
+
