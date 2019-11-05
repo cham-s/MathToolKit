@@ -278,13 +278,17 @@ extension Angle: CustomStringConvertible {
 struct Vector2D {
     var x = 0.0, y = 0.0
     var magnitude: Double { sqrt(pow(x, 2) + pow(y, 2)) }
+    var quadrant: Quadrant {
+        get {
+            Quadrant(x: x, y: y)
+        }
+    }
     var direction: Double? {
         guard x != 0 else {
             return nil
         }
         
         let angle = Angle(radians: atan(y / x))
-        let quadrant = Quadrant(x: x, y: y)
         
         switch quadrant {
         case .first:
