@@ -236,7 +236,7 @@ public enum Quadrant {
     case fourth
     case origin
 
-    init(x: Double, y: Double) {
+    public init(x: Double, y: Double) {
         switch (x, y) {
         case (0.0, 0.0):
             self = .origin
