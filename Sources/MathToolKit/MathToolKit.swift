@@ -229,7 +229,7 @@ extension Matrix {
 }
 
 // MARK: - Quadrant
-public enum Quadrant {
+public enum Quadrant:String {
     case first
     case second
     case third
@@ -255,7 +255,7 @@ public enum Quadrant {
 // MARK: - Quadrant: Description
 extension Quadrant: CustomStringConvertible {
     public var description: String {
-        let quadrant = self == .origin ? "\(self)" : "\(self) quadrant"
+        let quadrant = self == .origin ? "\(self.rawValue)" : "\(self.rawValue) quadrant."
         return "The point is located at the \(quadrant)."
     }
 }
