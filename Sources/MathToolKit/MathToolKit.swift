@@ -7,16 +7,17 @@
 
 import Foundation
 
-struct Tuple<T: Numeric>: MutableCollection {
-    typealias Index = Array<T>.Index
-    typealias Element = Array<T>.Element
+// MARK: - Tuple
+public struct Tuple<T: Numeric>: MutableCollection {
+    public typealias Index = Array<T>.Index
+    public typealias Element = Array<T>.Element
     
     var values: [T]
 
-    var startIndex: Index { values.startIndex }
-    var endIndex: Index { values.endIndex }
+    public var startIndex: Index { values.startIndex }
+    public var endIndex: Index { values.endIndex }
     
-    subscript(position: Index) -> T {
+    public subscript(position: Index) -> T {
         get {
             return values[position]
         }
@@ -26,7 +27,7 @@ struct Tuple<T: Numeric>: MutableCollection {
         }
     }
     
-    func index(after i: Index) -> Index {
+    public func index(after i: Index) -> Index {
         return values.index(after: i)
     }
     
@@ -35,9 +36,9 @@ struct Tuple<T: Numeric>: MutableCollection {
     }
 }
 
-// Dot product
+// MARK: - Tuple operations
 extension Tuple {
-    static func *(left: Tuple, right: Tuple) -> T {
+    public static func *(left: Tuple, right: Tuple) -> T {
         assert(isValidOperation(left: right, right: left), "Unbalanced tuples")
         var result: T = 0
         for i in 0..<right.count {
@@ -46,7 +47,7 @@ extension Tuple {
         return result
     }
     
-    static func +(left: Tuple, right: Tuple) -> Tuple {
+    public static func +(left: Tuple, right: Tuple) -> Tuple {
         assert(isValidOperation(left: right, right: left), "Unbalanced tuples")
         var result: Tuple = []
         for i in 0..<right.count {
@@ -56,7 +57,7 @@ extension Tuple {
         return result
     }
     
-    static func -(left: Tuple, right: Tuple) -> Tuple {
+    public static func -(left: Tuple, right: Tuple) -> Tuple {
         assert(isValidOperation(left: right, right: left), "Unbalanced tuples")
         var result: Tuple = []
         for i in 0..<right.count {
@@ -66,7 +67,7 @@ extension Tuple {
         return result
     }
     
-    static func *(left: T, right: Tuple) -> Tuple {
+    public static func *(left: T, right: Tuple) -> Tuple {
         return Tuple(values: right.map { left * $0 })
     }
     
@@ -76,9 +77,9 @@ extension Tuple {
 }
 
 
-// Pretty Print
+// MARK: - Tuple: Description
 extension Tuple: CustomStringConvertible where Element: LosslessStringConvertible {
-    var description: String {
+    public var description: String {
         var output = "( "
         let replaced = values.map { String($0) }.joined(separator: ", ")
         output += "\(replaced) )"
@@ -87,17 +88,19 @@ extension Tuple: CustomStringConvertible where Element: LosslessStringConvertibl
     }
 }
 
+// MARK: - Tuple: Array Literal Format
 extension Tuple: ExpressibleByArrayLiteral {
-    init(arrayLiteral elements: Element...) {
+    public init(arrayLiteral elements: Element...) {
         self.values = elements
     }
 }
 
 
-struct Matrix {
-    var rowsSize: Int
-    var columnsSize: Int
-    var rows: [[Double]] {
+// MARK: - Matrix
+public struct Matrix {
+    public var rowsSize: Int
+    public var columnsSize: Int
+    public var rows: [[Double]] {
         var result: [[Double]] = []
         for currentStart in stride(from: 0, to: columnsSize * rowsSize, by: rowsSize) {
             result.append(Array(grid[currentStart..<rowsSize + currentStart]))
@@ -105,7 +108,7 @@ struct Matrix {
         return result
     }
     
-    var columns: [[Double]] {
+    public var columns: [[Double]] {
         var result: [[Double]] = []
         for i in 0..<columnsSize {
             var column: [Double] = []
@@ -118,13 +121,13 @@ struct Matrix {
     }
         
     private var grid: [Double]
-    init(rows: Int, columns: Int) {
+    public init(rows: Int, columns: Int) {
         self.rowsSize = rows
         self.columnsSize = columns
         grid = Array(repeating: 0.0, count: rows * columns)
     }
     
-    init?(_ values: [[Double]]) {
+    public init?(_ values: [[Double]]) {
         guard let firstCount = values.first?.count else {
             return nil
         }
@@ -141,7 +144,7 @@ struct Matrix {
         return column >= 0 && column < columnsSize && row >= 0 && row <= rowsSize
     }
     
-    subscript(row: Int, column: Int) -> Double {
+    public subscript(row: Int, column: Int) -> Double {
         get {
             assert(indexIsValid(row: row, column: column), "Index out of range")
             return grid[(columnsSize * row) + column]
@@ -153,8 +156,9 @@ struct Matrix {
     }
 }
 
+// MARK: - Matrix: Description
 extension Matrix: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         var output = ""
         for row in rows {
             let description = row.map { String($0) }
@@ -166,8 +170,10 @@ extension Matrix: CustomStringConvertible {
 }
 
 
+
+// MARK: - Matrix: Operations
 extension Matrix {
-    static func +(left: Matrix, right: Matrix) -> Matrix {
+    public static func +(left: Matrix, right: Matrix) -> Matrix {
         assert(isValidAddition(left: left, right: right))
         var result = Matrix(rows: right.rowsSize, columns: right.columnsSize)
         for i in 0..<right.rowsSize {
@@ -178,7 +184,7 @@ extension Matrix {
         return result
     }
     
-    static func -(left: Matrix, right: Matrix) -> Matrix {
+    public static func -(left: Matrix, right: Matrix) -> Matrix {
         assert(isValidAddition(left: left, right: right))
         var result = Matrix(rows: right.rowsSize, columns: right.columnsSize)
         for i in 0..<right.rowsSize {
@@ -189,7 +195,7 @@ extension Matrix {
         return result
     }
     
-    static func *(left: Matrix, right: Matrix) -> Matrix {
+    public static func *(left: Matrix, right: Matrix) -> Matrix {
         var result = Matrix(rows: left.rowsSize, columns: right.columnsSize)
         for i in 0..<right.rowsSize {
             for j in 0..<left.columnsSize {
@@ -202,7 +208,7 @@ extension Matrix {
         return result
     }
     
-    static func *(left: Double, right: Matrix) -> Matrix {
+    public static func *(left: Double, right: Matrix) -> Matrix {
         var result = Matrix(rows: right.rowsSize, columns: right.columnsSize)
         for i in 0..<right.rowsSize {
             for j in 0..<right.columnsSize {
@@ -222,7 +228,8 @@ extension Matrix {
     }
 }
 
-enum Quadrant {
+// MARK: - Quadrant
+public enum Quadrant {
     case first
     case second
     case third
@@ -245,45 +252,53 @@ enum Quadrant {
     }
 }
 
+// MARK: - Quadrant: Description
 extension Quadrant: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         let quadrant = self == .origin ? "\(self)" : "\(self) quadrant"
         return "The point is located at the \(quadrant)."
     }
 }
 
 
-/*
- Mark: Angle
- */
-struct Angle {
+// MARK: - Angle
+public struct Angle {
     var degrees: Double
     var radians: Double
     
-    init(radians: Double) {
+    public init(radians: Double) {
         self.radians = radians
         self.degrees = (radians * 180.0) / Double.pi
     }
     
-    init(degrees: Double) {
+    public init(degrees: Double) {
         self.degrees = degrees
         self.radians = (degrees * Double.pi) / 180.0
     }
 }
 
+// MARK: - Angle: Description
 extension Angle: CustomStringConvertible {
-    var description: String { "\(degrees) degrees, \(radians) radians." }
+    public var description: String { "\(degrees) degrees, \(radians) radians." }
 }
 
-struct Vector2D {
-    var x = 0.0, y = 0.0
-    var magnitude: Double { sqrt(pow(x, 2) + pow(y, 2)) }
-    var quadrant: Quadrant {
+// MARK: - Vector Notation
+public enum VectorNotation {
+    case column, component, unit
+}
+
+
+// MARK: - Vector2D
+public struct Vector2D {
+    public var x = 0.0, y = 0.0
+    public var magnitude: Double { sqrt(pow(x, 2) + pow(y, 2)) }
+    public var notation: VectorNotation
+    public var quadrant: Quadrant {
         get {
             Quadrant(x: x, y: y)
         }
     }
-    var direction: Double? {
+    public var direction: Double? {
         guard x != 0 else {
             return nil
         }
@@ -293,45 +308,42 @@ struct Vector2D {
         switch quadrant {
         case .first:
             return angle.degrees
-        case .second:
-            return angle.degrees + 180.0
-        case .third:
+        case .second, .third:
             return angle.degrees + 180.0
         default:
             return angle.degrees + 360.0
         }
     }
-    var notation: VectorNotation
     
-    init(x: Double, y: Double, notation: VectorNotation = .component) {
+    
+    public init(x: Double, y: Double, notation: VectorNotation = .component) {
         self.x = x
         self.y = y
         self.notation = notation
     }
-    
-    enum VectorNotation {
-        case column, component, unit
-    }
 }
 
+
+// MARK: - Vector2D: Operations
 extension Vector2D {
 
-    static func *(left: Double, right: Vector2D) -> Vector2D {
+    public static func *(left: Double, right: Vector2D) -> Vector2D {
         return Vector2D(x: left * right.x, y: left * right.y)
     }
     
-    static func -(left: Vector2D, right: Vector2D) -> Vector2D {
+    public static func -(left: Vector2D, right: Vector2D) -> Vector2D {
         return Vector2D(x: left.x - right.x, y: left.y - right.y)
     }
     
-    static func +(left: Vector2D, right: Vector2D) -> Vector2D {
+    public static func +(left: Vector2D, right: Vector2D) -> Vector2D {
         return Vector2D(x: left.x + right.x, y: left.y + right.y)
     }
 }
 
+// MARK: - Vector2D: Description
 extension Vector2D: CustomStringConvertible {
     
-    var description: String {
+    public var description: String {
         var output = ""
         switch notation {
         case .column:
